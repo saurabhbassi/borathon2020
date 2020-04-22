@@ -60,7 +60,11 @@ def printHostInformation(datacenter, host, cluster):
         for ds_name in datastore_names:
             Capacity = datastore_res_table[ds_name]['capacity']
             FreeDisk = datastore_res_table[ds_name]['free_space']
-            host_res_table.add_row([datacenter_name, name, TotalCpu, cpuUsage, FreeCpu, memoryCapacityInGB, memoryUsage, FreeMemory,freeCpuPercent, freeMemoryPercentage, ds_name, Capacity, FreeDisk, cluster])
+            if 'ssd' in ds_name.lower():
+                ssd_or_hdd = 1
+            else:
+                ssd_or_hdd = 0
+            host_res_table.add_row([datacenter_name, name, TotalCpu, cpuUsage, FreeCpu, memoryCapacityInGB, memoryUsage, FreeMemory,freeCpuPercent, freeMemoryPercentage, ds_name, Capacity, FreeDisk, ssd_or_hdd, cluster])
             TotalCpu = cpuUsage = FreeCpu = memoryCapacityInGB = memoryUsage = FreeMemory = freeCpuPercent = freeMemoryPercentage = '-'
     except Exception as error:
         print "Unable to access information for host: ", name
@@ -140,7 +144,7 @@ def main():
                           pwd=args.password, port=int(args.port))
         atexit.register(Disconnect, si)
         content = si.RetrieveContent()
-        headers = ["datacenter", "Host IP", "HostCpu (GHz)", "CpuUsage (GHz)", "FreeCpu (GHz)", "HostMem (GB)", "MemUsage (GB)", "FreeMem (GB)", "FreeCpuPercent", "FreeMemPercent", "DataStore Name", "Capacity", "FreeDisk", "Cluster"]
+        headers = ["datacenter", "Host IP", "HostCpu (GHz)", "CpuUsage (GHz)", "FreeCpu (GHz)", "HostMem (GB)", "MemUsage (GB)", "FreeMem (GB)", "FreeCpuPercent", "FreeMemPercent", "DataStore Name", "Capacity", "FreeDisk", "SSD_or_HDD", "Cluster"]
         host_res_table = prettytable.PrettyTable(headers)
         host_res_table.format = True
 
